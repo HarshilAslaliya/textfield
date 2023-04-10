@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
 
-class NextPage extends StatefulWidget {
-  const NextPage({Key? key}) : super(key: key);
+class DetailsPage extends StatelessWidget {
+  const DetailsPage({Key? key, required this.values}) : super(key: key);
 
-  @override
-  State<NextPage> createState() => _NextPageState();
-}
+  final List<String> values;
 
-class _NextPageState extends State<NextPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Details Page'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView.builder(
+          itemCount: values.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text('Field ${index + 1}'),
+              subtitle: Text(values[index]),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

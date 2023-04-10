@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'next_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,18 +9,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  GlobalKey<FormState> text = GlobalKey<FormState>();
 
-  TextEditingController textEditingController = TextEditingController();
+  List<TextEditingController> _controllers = [];
 
-  int counter = 1;
-  String details = "Hello";
+  @override
+  void initState() {
+    super.initState();
+    _controllers.add(TextEditingController());
+  }
 
   @override
   Widget build(BuildContext context) {
-    Map map1 = {
-      "$counter": details,
-    };
     return Scaffold(
       appBar: AppBar(
         title: Text("TextField"),
@@ -30,36 +29,38 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.only(right: 5),
             child: InkWell(
                 onTap: () {
-                  print(map1);
+                  // print(map1);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailsPage(
+                        values: _controllers.map((c) => c.text).toList(),
+                      ),
+                    ),
+                  );
                 },
-                child: Icon(Icons.apps)),
+                child: Icon(Icons.details)),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          children: map1.entries.map((e) {
-            return Container(
-              padding: EdgeInsets.all(5),
-              margin: EdgeInsets.only(right: 8),
-              child: TextFormField(
-                onChanged: (val) {
-                  details = val;
-                },
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Enter your Details..."),
-              ),
-            );
-          }).toList(),
-        ),
+      body: ListView.builder(
+        shrinkWrap: true,
+        itemCount: _controllers.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              controller: _controllers[index],
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(), hintText: "Enter Details..."),
+            ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            map1["${counter++}"] = details;
+            _controllers.add(TextEditingController());
           });
         },
         backgroundColor: Colors.purple.withOpacity(0.5),
